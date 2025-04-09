@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-    int idx=8;//定义输出名
+    int idx=1;//定义输出名
 
     call_mesh1d(); //调用网格生成函数
     call_init(); //调用初始化函数
@@ -15,7 +15,7 @@ int main()
     do
     {
         call_boundary(); //调用边界条件函数
-        call_solve_8();//调用求解函数
+        call_solve_1();//调用求解函数
         t0+=dt; //更新时间
         nloop = nloop + 1;
         if (nloop % nout == 0) //每隔nout步输出一次结果
