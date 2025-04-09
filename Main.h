@@ -1,0 +1,14 @@
+void call_mesh1d();
+void call_init();
+void call_boundary();
+void call_CFL();
+void call_solve_1();
+void call_solve_2();
+void call_solve_3();
+void call_solve_4();
+void call_solve_5();
+void call_solve_6();
+void call_solve_7();
+void call_solve_8();
+void call_output(double num, int idx, double cfl);
+void call_release();
