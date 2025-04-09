@@ -16,7 +16,7 @@ double t0=0.0; //起始时间
 double tout=3; //终止时间
 double dt; //计算时间步长
 
-double cfl=0.8; //CFL数
+double cfl=0.5; //CFL数
 double a=0.2; //波速
 
 int nloop = 0; //循环步数
