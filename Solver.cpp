@@ -20,33 +20,33 @@ double sign(double x)
     }
 }
 
-double TDMA(double *a, double *b, double *c, double *d, int n) // Thomas算法
-{
-    double *x = new double[n]; // 存储解的数组
-    double *p = new double[n]; // 存储中间变量c1
-    double *q = new double[n]; // 存储中间变量d1
+// double TDMA(double *a, double *b, double *c, double *d, int n) // Thomas算法
+// {
+//     double *x = new double[n]; // 存储解的数组
+//     double *p = new double[n]; // 存储中间变量c1
+//     double *q = new double[n]; // 存储中间变量d1
 
-    p[0] = c[0] / b[0];
-    q[0] = d[0] / b[0];
+//     p[0] = c[0] / b[0];
+//     q[0] = d[0] / b[0];
 
-    for (int i = 1; i < n; i++)
-    {
-        double denom = b[i] - a[i] * p[i - 1];
-        p[i] = c[i] / denom;
-        q[i] = (d[i] + a[i] * q[i - 1]) / denom;
-    }
+//     for (int i = 1; i < n; i++)
+//     {
+//         double denom = b[i] - a[i] * p[i - 1];
+//         p[i] = c[i] / denom;
+//         q[i] = (d[i] + a[i] * q[i - 1]) / denom;
+//     }
 
-    x[n - 1] = q[n - 1];
-    for (int i = n - 2; i >= 0; i--)
-    {
-        x[i] = p[i] * x[i + 1] + q[i];
-    }
+//     x[n - 1] = q[n - 1];
+//     for (int i = n - 2; i >= 0; i--)
+//     {
+//         x[i] = p[i] * x[i + 1] + q[i];
+//     }
 
-    delete[] p;
-    delete[] q;
+//     delete[] p;
+//     delete[] q;
 
-    return *x;
-}
+//     return *x;
+// }
 
 void call_solve_1() // 时间向前空间向前差分格式（UpWind）
 {
@@ -295,7 +295,7 @@ double flux(int i, double *u)
     return -a * WENO(fmm, fm, f, fp, fpp);
 }
 
-// 3阶TVD Runge-Kutta法 + WENO5格式
+// 3阶 Runge-Kutta法 + WENO5格式
 void call_solve_12()
 {
     double *u1 = new double[ni]; // 存储第一步结果
