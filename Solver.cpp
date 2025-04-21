@@ -167,3 +167,20 @@ void call_solve_9() // 隐式迎风格式
     }
     // system("pause");
 }
+
+void call_solve_10() //Crank-Nicolson格式
+{
+    double a1 = a * dt / (2 * dx);
+    double a2 = 1.0 + a1;
+    um[0] = u[0]; // 处理第一个点
+    for (int i = 1; i < ni; i++)
+    {
+        um[i] = (u[i] + a1 * (um[i - 1] + u[i - 1]- u[i])) / a2; // 递推计算n+1时刻的速度
+    }
+    for (int i = 1; i < ni; i++)
+    {
+        u[i] = um[i]; // 更新速度
+        // cout<<i<<'\t'<<u[i]<<endl;
+    }
+    // system("pause");
+}
