@@ -20,6 +20,34 @@ double sign(double x)
     }
 }
 
+double TDMA(double *a, double *b, double *c, double *d, int n) // Thomas算法
+{
+    double *x = new double[n]; // 存储解的数组
+    double *p = new double[n]; // 存储中间变量c1
+    double *q = new double[n]; // 存储中间变量d1
+
+    p[0] = c[0] / b[0];
+    q[0] = d[0] / b[0];
+
+    for (int i = 1; i < n; i++)
+    {
+        double denom = b[i] - a[i] * p[i - 1];
+        p[i] = c[i] / denom;
+        q[i] = (d[i] + a[i] * q[i - 1]) / denom;
+    }
+
+    x[n - 1] = q[n - 1];
+    for (int i = n - 2; i >= 0; i--)
+    {
+        x[i] = p[i] * x[i + 1] + q[i];
+    }
+
+    delete[] p;
+    delete[] q;
+
+    return *x;
+}
+
 void call_solve_1() // 时间向前空间向前差分格式（UpWind）
 {
     for (int i = 1; i < ni; i++)
@@ -136,7 +164,7 @@ void call_solve_7() // Roe格式
     // system("pause");
 }
 
-void call_solve_8() // Beam-Warming格式
+void call_solve_8() // Beam-Warming显示格式
 {
     um[1] = u[1] - a * dt / dx * (u[1] - u[0]); // 处理第二个点
     for (int i = 2; i < ni; i++)
@@ -168,14 +196,33 @@ void call_solve_9() // 隐式迎风格式
     // system("pause");
 }
 
-void call_solve_10() //Crank-Nicolson格式
+void call_solve_10() // Crank-Nicolson格式
 {
     double a1 = a * dt / (2 * dx);
     double a2 = 1.0 + a1;
     um[0] = u[0]; // 处理第一个点
     for (int i = 1; i < ni; i++)
     {
-        um[i] = (u[i] + a1 * (um[i - 1] + u[i - 1]- u[i])) / a2; // 递推计算n+1时刻的速度
+        um[i] = (u[i] + a1 * (um[i - 1] + u[i - 1] - u[i])) / a2; // 递推计算n+1时刻的速度
+    }
+    for (int i = 1; i < ni; i++)
+    {
+        u[i] = um[i]; // 更新速度
+        // cout<<i<<'\t'<<u[i]<<endl;
+    }
+    // system("pause");
+}
+
+void call_solve_11() // Beam-Warming隐式格式
+{
+    um[0] = u[0];                                                                           // 处理第一个点
+    um[1] = (u[1] + a * dt / (2 * dx) * (um[0] + u[0] - u[1])) / (1.0 + a * dt / (2 * dx)); // 处理第二个点
+    double a1 = -a * dt / (2 * dx);
+    double a2 = 2 * a * dt / dx;
+    double a3 = 1.0 + a1 + a2;
+    for (int i = 2; i < ni; i++)
+    {
+        um[i] = (u[i] + a1 * um[i - 2] + a2 * um[i - 1]) / a3; // 递推计算n+1时刻的速度
     }
     for (int i = 1; i < ni; i++)
     {
