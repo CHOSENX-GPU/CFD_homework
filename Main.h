@@ -13,5 +13,6 @@ void call_solve_8();
 void call_solve_9();
 void call_solve_10();
 void call_solve_11();
+void call_solve_12();
 void call_output(double num, int idx, double cfl);
 void call_release();
