@@ -6,15 +6,10 @@
 #include"Module.h"
 
 using namespace std;
+using namespace CFDParams;
 
-void call_mesh1d()
-{
-    dx=(x2-x1)/(ni-1); //计算网格步长
-    // cout<<"dx="<<dx<<endl; //输出网格步长
-    x = new double[ni]; //分配内存，定义网格节点坐标
-    for(int i=0;i<ni;i++)
-    {
-        x[i]=x1+i*dx; //计算网格节点坐标（均匀离散）
-        // cout<<"x["<<i<<"]="<<x[i]<<endl; //输出网格节点坐标
-    }
+void call_mesh1d() {
+    // 网格已在CFDParams::initialize()中生成，
+    // 此函数保留以维持向后兼容性
+    cout << "网格生成完成，dx = " << dx << endl;
 }

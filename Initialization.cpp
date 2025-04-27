@@ -1,32 +1,32 @@
 ///////////////////////////////////////////////////////////////////
-//  定义初始条件
+// Initialization.cpp - 初始条件设置
 ///////////////////////////////////////////////////////////////////
 
-#include<iostream>
-#include<cmath>
-#include"Module.h"
+#include <iostream>
+#include <cmath>
+#include "Module.h"
 
+using namespace CFDParams;
 using namespace std;
 
-// 定义初始条件(脉冲方波)
-void call_init()
-{
-    u = new double[ni]; //分配内存，定义速度
-    um = new double[ni]; //分配内存，定义n+1时刻的速度
-    un = new double[ni]; //分配内存，定义n-1时刻的速度
+// 设置初始条件(脉冲方波)
+void call_init() {
+    t0 = 0.0; // 初始时间
     
-    t0=0.0; //起始时间
-
-    for (int i=0;i<ni;i++)
-    {
-        if (x[i]>=0.0 && x[i]<=0.3)
-        {
-            u[i]=1.0; //定义坐标小于0.3处的速度为1.0
+    try {
+        // 初始速度分布(方波脉冲)
+        for (int i = 0; i < ni; i++) {
+            // 定义脉冲波：在[0.0, 0.3]区间内速度为1.0，其他位置为0
+            u[i] = (x[i] >= 0.0 && x[i] <= 0.3) ? 1.0 : 0.0;
+            // 初始化其他时间层
+            um[i] = u[i];
+            un[i] = u[i];
         }
-        else
-        {
-            u[i]=0.0; //其余坐标点处速度为0
-        }
-        // cout<<i<<'\t'<<u[i]<<endl;
+        
+        cout << "初始条件设置完成" << endl;
+    }
+    catch (const std::exception& e) {
+        cerr << "初始化失败: " << e.what() << endl;
+        exit(1);
     }
 }

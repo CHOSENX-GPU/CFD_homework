@@ -1,65 +1,71 @@
 ///////////////////////////////////////////////////////////////////
-//  输出结果
+// Output.cpp - 结果输出与可视化
 ///////////////////////////////////////////////////////////////////
 
-#include<iostream>
-#include<iomanip>
-#include<fstream>
-#include<string>
-#include<cstring>
-#include<sstream> // 包含stringstream头文件
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <filesystem>
-#include"Module.h"
+#include "Module.h"
 
+using namespace CFDParams;
 using namespace std;
 namespace fs = filesystem;
 
-
-void call_output(double num, int idx, double cfl)
-{
-    // 构建文件夹名称
-    string outerFolderName = "./output" + to_string(idx);
+// 结果输出函数
+void call_output(double num, int idx, double cfl) {
+    // 获取当前使用的求解方法名称
+    string methodName = getSolverName(currentMethod);
+    
+    // 构建输出目录结构
+    string outerFolderName = "./output" + to_string(idx) + "_" + methodName;
     ostringstream oss;
-    oss << fixed << setprecision(2) << cfl; // 设置小数点后两位精度
+    oss << fixed << setprecision(2) << cfl;
     string cfl_format = oss.str();
     string innerFolderName = outerFolderName + "/CFL_" + cfl_format;
-
-    // 检查外层文件夹是否存在，不存在则创建
-    if (!fs::exists(outerFolderName)) 
-    {
-        if (!fs::create_directory(outerFolderName)) 
-        {
-            cerr << "无法创建 " << outerFolderName << " 文件夹" << std::endl;
+    
+    try {
+        // 创建外层目录
+        if (!fs::exists(outerFolderName)) {
+            fs::create_directory(outerFolderName);
+        }
+        
+        // 创建内层目录
+        if (!fs::exists(innerFolderName)) {
+            fs::create_directory(innerFolderName);
+        }
+        
+        // 构建文件名
+        string filename = innerFolderName + "/file" + to_string(static_cast<int>(num)) + ".dat";
+        
+        // 打开输出文件
+        ofstream outfile(filename);
+        if (!outfile) {
+            cerr << "无法创建输出文件: " << filename << endl;
             return;
         }
-    }
-
-    // 检查内层文件夹是否存在，不存在则创建
-    if (!fs::exists(innerFolderName)) 
-    {
-        if (!fs::create_directory(innerFolderName)) 
-        {
-            cerr << "无法创建 " << innerFolderName << " 文件夹" << std::endl;
-            return;
+        
+        // 写入Tecplot格式头
+        outfile << "VARIABLEs = X,u" << '\n';
+        outfile << "ZONE I=" << ni << '\n';
+        outfile << "datapacking=block" << '\n';
+        
+        // 写入坐标数据
+        for (int i = 0; i < ni; i++) {
+            outfile << setprecision(8) << x[i] << '\n';
         }
+        
+        // 写入速度数据
+        for (int i = 0; i < ni; i++) {
+            outfile << setprecision(8) << u[i] << '\n';
+        }
+        
+        outfile.close();
+        cout << "输出结果已保存至: " << filename << endl;
     }
-
-
-    /*生成输出文件*/
-    char filename[50] = { 0 }; char str[5];		/*filename--输出文件名，str--文件标识符*/
-    string fullPath = innerFolderName + "/file";
-    strcpy_s(filename, fullPath.c_str());
-    _itoa_s(num, str, 10);						        /*num转字符串*/
-    strcat_s(filename, str);			         		/*将str添加到filename结尾*/
-    strcat_s(filename, ".dat");					      /*将''.dat''添加到filename结尾*/
-
-    ofstream outfile(filename);
-    outfile << "VARIABLEs = X,u" << '\n';
-    outfile << "ZONE I=" << ni << '\n';
-    outfile << "datapacking=block" << '\n';
-    for (int i = 0; i < ni; i++)
-        outfile << x[i] << '\n';
-    for (int i = 0; i < ni; i++)
-        outfile << u[i] << '\n';
-    outfile.close();
-} 
+    catch (const exception& e) {
+        cerr << "输出文件时发生错误: " << e.what() << endl;
+    }
+}
